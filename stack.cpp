@@ -14,11 +14,11 @@ public:
         capacity = n;
         pointer = -1;
     }
-    int empty()
+    bool empty()
     {
         return pointer == -1;
     }
-    int isFull()
+    bool isFull()
     {
         return pointer == capacity - 1;
     }
@@ -54,22 +54,78 @@ public:
         return pointer + 1;
     }
 };
+template <typename t = int>
+class StackLinkedList
+{
+    struct Node
+    {
+        t data;
+        Node *next;
+        Node(int value) : data(value), next(NULL) {}
+    } *head;
 
-
+public:
+    StackLinkedList()
+    {
+        head = NULL;
+    }
+    void push(t value)
+    {
+        Node *newNode = new Node(value);
+        newNode->next = head;
+        head = newNode;
+    }
+    void pop()
+    {
+        if (head == NULL)
+        {
+            cout << "Underflow.\n";
+            return;
+        }
+        Node *temp = head;
+        head = head->next;
+        delete temp;
+    }
+    bool empty()
+    {
+        return head == NULL;
+    }
+    t top()
+    {
+        if (empty())
+        {
+            cout << "Empty.\n";
+            exit(0);
+        }
+        return head->data;
+    }
+    int size()
+    {
+        Node *temp = head;
+        int ans = 0;
+        while (temp)
+        {
+            ans++;
+            temp = temp->next;
+        }
+        return ans;
+    }
+};
 
 int main()
 {
-    StackArray<> s(5);
-    s.push(5);
-    s.push(4);
-    s.push(90);
-    s.push(78);
-    s.push(12);
-    s.push(8);
+    StackLinkedList<char> s;
+    s.push('j');
+    s.push('c');
+    s.push('t');
+    s.push('7');
+    s.push('1');
+    s.push('8');
     while (s.size())
     {
         cout << s.top() << endl;
         s.pop();
     }
+    s.pop();
     return 0;
 }
