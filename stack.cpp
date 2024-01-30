@@ -1,6 +1,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 template <class t = int>
+
+// stack using array
 class StackArray
 {
     t *a;
@@ -54,6 +56,8 @@ public:
         return pointer + 1;
     }
 };
+
+// stack using linked list
 template <typename t = int>
 class StackLinkedList
 {
@@ -112,6 +116,7 @@ public:
     }
 };
 
+// conversions
 int priority(char ch)
 {
 
@@ -124,6 +129,7 @@ int priority(char ch)
     return -1;
 }
 
+// infix to postfix
 string infixToPostfix(string word) // assumig valid expression
 {
     string ans = "";
@@ -166,6 +172,8 @@ string infixToPostfix(string word) // assumig valid expression
 
     return ans;
 }
+
+// infix to prefix
 string infixToPrefix(string word) // assumig that given string is valid
 {
     string ans = "";
@@ -211,23 +219,26 @@ string infixToPrefix(string word) // assumig that given string is valid
     return ans;
 }
 
+// labda expression-nameless function
+unordered_map<char, function<int(int, int)>> m = {
+    {'+', [&](int a, int b)
+     { return a + b; }},
+    {'-', [&](int a, int b)
+     { return a - b; }},
+    {'*', [&](int a, int b)
+     { return a * b; }},
+    {'/', [&](int a, int b)
+     { return a / b; }},
+    {'%', [&](int a, int b)
+     { return a % b; }},
+    {'^', [&](int a, int b)
+     { return pow(a, b); }},
+};
+
+// solve postfix
 int postfixEvaluation(string word)
 {
     stack<int> s;
-    unordered_map<char, function<int(int, int)>> m = {
-        {'+', [&](int a, int b)
-         { return a + b; }},
-        {'-', [&](int a, int b)
-         { return a - b; }},
-        {'*', [&](int a, int b)
-         { return a * b; }},
-        {'/', [&](int a, int b)
-         { return a / b; }},
-        {'%', [&](int a, int b)
-         { return a % b; }},
-        {'^', [&](int a, int b)
-         { return pow(a, b); }},
-    };
 
     for (int i = 0; i < word.size(); i++)
     {
@@ -247,10 +258,36 @@ int postfixEvaluation(string word)
     }
     return s.top();
 }
+
+// solve prefix
+int pretfixEvaluation(string word)
+{
+    stack<int> s;
+    reverse(word.begin(), word.end());
+
+    for (int i = 0; i < word.size(); i++)
+    {
+        char ch = word[i];
+        if (ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '%' || ch == '^')
+        {
+            int op1 = s.top();
+            s.pop();
+            int op2 = s.top();
+            s.pop();
+            s.push(m[ch](op1, op2));
+        }
+        else if (ch != ' ')
+        {
+            s.push(ch - '0');
+        }
+    }
+    return s.top();
+}
+
 int main()
 {
     string s;
     getline(cin, s);
-    cout << postfixEvaluation(s);
+    cout << pretfixEvaluation(s);
     return 0;
 }
