@@ -210,11 +210,47 @@ string infixToPrefix(string word) // assumig that given string is valid
     reverse(ans.begin(), ans.end());
     return ans;
 }
+
+int postfixEvaluation(string word)
+{
+    stack<int> s;
+    unordered_map<char, function<int(int, int)>> m = {
+        {'+', [&](int a, int b)
+         { return a + b; }},
+        {'-', [&](int a, int b)
+         { return a - b; }},
+        {'*', [&](int a, int b)
+         { return a * b; }},
+        {'/', [&](int a, int b)
+         { return a / b; }},
+        {'%', [&](int a, int b)
+         { return a % b; }},
+        {'^', [&](int a, int b)
+         { return pow(a, b); }},
+    };
+
+    for (int i = 0; i < word.size(); i++)
+    {
+        char ch = word[i];
+        if (ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '%' || ch == '^')
+        {
+            int op2 = s.top();
+            s.pop();
+            int op1 = s.top();
+            s.pop();
+            s.push(m[ch](op1, op2));
+        }
+        else if (ch != ' ')
+        {
+            s.push(ch - '0');
+        }
+    }
+    return s.top();
+}
 int main()
 {
     string s;
     getline(cin, s);
-    cout << infixToPostfix(s) << endl
-         << infixToPrefix(s);
+    cout << postfixEvaluation(s);
     return 0;
 }
