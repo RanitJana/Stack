@@ -112,20 +112,65 @@ public:
     }
 };
 
-int main()
+int priority(char ch)
 {
-    StackLinkedList<char> s;
-    s.push('j');
-    s.push('c');
-    s.push('t');
-    s.push('7');
-    s.push('1');
-    s.push('8');
-    while (s.size())
+
+    if (ch == '^')
+        return 3;
+    if (ch == '*' || ch == '/' || ch == '%')
+        return 2;
+    if (ch == '+' || ch == '-')
+        return 1;
+    return -1;
+}
+
+string infixToPostfix(string word) // assumig valid expression
+{
+    string ans = "";
+    stack<char> s;
+    for (int i = 0; i < word.size(); ++i)
     {
-        cout << s.top() << endl;
+        char ch = word[i];
+        if (ch == '(')
+        {
+            s.push(ch);
+        }
+        else if (ch == ')')
+        {
+            while (s.top() != '(')
+            {
+                ans.push_back(s.top());
+                s.pop();
+            }
+            s.pop();
+        }
+        else if (ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '%' || ch == '^')
+        {
+            while (!s.empty() && s.top() != '(' && priority(ch) <= priority(s.top()))
+            {
+                ans.push_back(s.top());
+                s.pop();
+            }
+            s.push(ch);
+        }
+        else if (ch != ' ')
+        {
+            ans.push_back(ch);
+        }
+    }
+    while (!s.empty())
+    {
+        ans.push_back(s.top());
         s.pop();
     }
-    s.pop();
+
+    return ans;
+}
+
+int main()
+{
+    string s;
+    getline(cin, s);
+    cout << infixToPostfix(s);
     return 0;
 }
