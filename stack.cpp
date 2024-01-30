@@ -166,11 +166,55 @@ string infixToPostfix(string word) // assumig valid expression
 
     return ans;
 }
+string infixToPrefix(string word) // assumig that given string is valid
+{
+    string ans = "";
+    stack<char> s;
+    reverse(word.begin(), word.end());
+    for (int i = 0; i < word.size(); i++)
+    {
+        char ch = word[i];
 
+        if (ch == ')')
+        {
+            s.push(ch);
+        }
+        else if (ch == '(')
+        {
+            while (s.top() != ')')
+            {
+                ans.push_back(s.top());
+                s.pop();
+            }
+            s.pop();
+        }
+        else if (ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '%' || ch == '^')
+        {
+            while (!s.empty() && s.top() != ')' && priority(ch) < priority(s.top()))
+            {
+                ans.push_back(s.top());
+                s.pop();
+            }
+            s.push(ch);
+        }
+        else if (ch != ' ')
+        {
+            ans.push_back(ch);
+        }
+    }
+    while (!s.empty())
+    {
+        ans.push_back(s.top());
+        s.pop();
+    }
+    reverse(ans.begin(), ans.end());
+    return ans;
+}
 int main()
 {
     string s;
     getline(cin, s);
-    cout << infixToPostfix(s);
+    cout << infixToPostfix(s) << endl
+         << infixToPrefix(s);
     return 0;
 }
